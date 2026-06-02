@@ -1,14 +1,28 @@
 # Volume for AirPlay Sonos
 
+[![Latest release](https://img.shields.io/github/v/release/danilapisarev/streamdeck-sonos-volume?sort=semver)](https://github.com/danilapisarev/streamdeck-sonos-volume/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/danilapisarev/streamdeck-sonos-volume/total)](https://github.com/danilapisarev/streamdeck-sonos-volume/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 A Stream Deck plugin with two buttons — **Volume Up** and **Volume Down** — for
 Sonos speakers, including speakers that are playing an AirPlay stream. The volume
 is controlled through the Sonos device API over your local network, so it works
 regardless of whether the audio source is AirPlay, a streaming service, or line-in.
 
+![Volume for AirPlay Sonos — Up/Down keys with a live volume bar](marketing/preview-stacked.png)
+
 > **Disclaimer:** This is an independent, third-party plugin. It is **not
 > affiliated with, sponsored by, or endorsed by Sonos, Inc. or Apple Inc.**
 > "Sonos" and "AirPlay" are trademarks of their respective owners and are used
 > here only to describe compatibility.
+
+## Download
+
+**[⬇ Download the latest `.streamDeckPlugin`](https://github.com/danilapisarev/streamdeck-sonos-volume/releases/latest/download/com.danila.sonos-volume.streamDeckPlugin)**
+
+Double-click the downloaded file to install it into the Stream Deck app (6.4+),
+then add the buttons and enter your speaker's IP (see [Configuration](#configuration)).
+All releases are on the [Releases page](https://github.com/danilapisarev/streamdeck-sonos-volume/releases).
 
 ## Actions
 
@@ -16,8 +30,8 @@ regardless of whether the audio source is AirPlay, a streaming service, or line-
 - **Volume Down** — lowers the speaker volume by the configured step on each press.
 
 Both actions share the same settings (speaker IP + volume step). Raising the
-volume on a muted speaker also unmutes it. A short ✓ confirms success; a ⚠ shows
-when the speaker can't be reached.
+volume on a muted speaker also unmutes it; a ⚠ is shown only when the speaker
+can't be reached.
 
 ### Live volume on the key
 
