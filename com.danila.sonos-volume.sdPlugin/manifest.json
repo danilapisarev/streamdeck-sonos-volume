@@ -3,7 +3,7 @@
 	"URL": "https://github.com/danilapisarev/streamdeck-sonos-volume",
 	"UUID": "com.danila.sonos-volume",
 	"Name": "Volume for AirPlay Sonos",
-	"Version": "1.0.0.0",
+	"Version": "1.0.1.0",
 	"Author": "Danila Pisarev",
 	"Actions": [
 		{
