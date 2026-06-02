@@ -20,7 +20,7 @@ regardless of whether the audio source is AirPlay, a streaming service, or line-
 
 **[⬇ Download the latest `.streamDeckPlugin`](https://github.com/danilapisarev/streamdeck-sonos-volume/releases/latest/download/com.danila.sonos-volume.streamDeckPlugin)**
 
-Double-click the downloaded file to install it into the Stream Deck app (6.4+),
+Double-click the downloaded file to install it into the Stream Deck app (6.9+),
 then add the buttons and enter your speaker's IP (see [Configuration](#configuration)).
 All releases are on the [Releases page](https://github.com/danilapisarev/streamdeck-sonos-volume/releases).
 
@@ -55,7 +55,7 @@ before a speaker is reachable) are produced from the same design by
 
 ## Requirements
 
-- Elgato Stream Deck (any model with keys) + Stream Deck software 6.4 or later
+- Elgato Stream Deck (any model with keys) + Stream Deck software 6.9 or later
 - macOS 12+ or Windows 10+
 - A Sonos speaker on the same local network
 

@@ -44,9 +44,9 @@
 	"CodePath": "bin/plugin.js",
 	"Description": "Increase or decrease the volume of your AirPlay-connected Sonos speakers with two Stream Deck buttons. Not affiliated with, or endorsed by, Sonos.",
 	"Icon": "imgs/plugin/icon",
-	"SDKVersion": 2,
+	"SDKVersion": 3,
 	"Software": {
-		"MinimumVersion": "6.4"
+		"MinimumVersion": "6.9"
 	},
 	"OS": [
 		{
