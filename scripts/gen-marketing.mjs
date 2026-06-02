@@ -89,6 +89,58 @@ function previewPng(barSide, upVol, dnVol, title, subtitle) {
 	return svgToPng(wrapper, W);
 }
 
+// ---- Setup / settings preview -------------------------------------------
+function settingsPreviewPng() {
+	const W = 1600;
+	const H = 1000;
+	const FONT = 'Helvetica Neue, Helvetica, Arial, sans-serif';
+
+	const bullets = [
+		["Enter your Sonos speaker’s IP address", '#5b6472'],
+		["Stereo pair? Use the LEFT (primary) speaker", UP],
+		["Set the volume step — 1 / 2 / 5 / 10% per press", '#5b6472'],
+	];
+	const bulletSvg = bullets
+		.map(([t, dot], i) => {
+			const y = 372 + i * 72;
+			return `<circle cx="138" cy="${y - 11}" r="7" fill="${dot}"/>
+				<text x="168" y="${y}" font-family="${FONT}" font-size="32" fill="#aeb4c0">${t}</text>`;
+		})
+		.join('');
+
+	const cardX = 900;
+	const cardY = 200;
+	const cardW = 560;
+	const cardH = 600;
+	const fx = cardX + 40;
+	const fw = cardW - 80;
+
+	const field = (y, label, value, { accent = false, select = false } = {}) => {
+		const stroke = accent ? UP : '#2a2c33';
+		return `<text x="${fx}" y="${y}" font-family="${FONT}" font-size="26" fill="#c5c9d3">${label}</text>
+			<rect x="${fx}" y="${y + 16}" width="${fw}" height="60" rx="12" fill="#0d0e12" stroke="${stroke}" stroke-width="${accent ? 2.5 : 1.5}"/>
+			<text x="${fx + 24}" y="${y + 55}" font-family="${FONT}" font-size="30" fill="#ffffff">${value}</text>
+			${select ? `<text x="${fx + fw - 34}" y="${y + 54}" font-family="${FONT}" font-size="26" fill="#8a8f9a">▾</text>` : ''}`;
+	};
+
+	const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+		<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+			<stop offset="0" stop-color="#1b1d24"/><stop offset="1" stop-color="#0c0d11"/>
+		</linearGradient></defs>
+		<rect width="${W}" height="${H}" fill="url(#g)"/>
+		<text x="120" y="276" font-family="${FONT}" font-size="64" font-weight="700" fill="#ffffff">Quick setup</text>
+		${bulletSvg}
+
+		<rect x="${cardX}" y="${cardY}" width="${cardW}" height="${cardH}" rx="28" fill="#14151a" stroke="#2a2c33" stroke-width="1.5"/>
+		<text x="${fx}" y="${cardY + 64}" font-family="${FONT}" font-size="26" font-weight="600" fill="#8a8f9a">ACTION SETTINGS</text>
+		${field(cardY + 130, 'Speaker IP', '192.168.1.50', { accent: true })}
+		<text x="${fx}" y="${cardY + 268}" font-family="${FONT}" font-size="22" fill="${UP}">Stereo pair → usually the LEFT speaker’s IP</text>
+		${field(cardY + 310, 'Volume Step', '2%', { select: true })}
+		${field(cardY + 450, 'Volume Bar', 'Show on left', { select: true })}
+	</svg>`;
+	return svgToPng(svg, W);
+}
+
 console.log('Generating marketing assets ->', outDir);
 writeFileSync(path.join(outDir, 'product-icon.png'), svgToPng(productIconSvg(), 1024));
 console.log('  ✓ product-icon.png 1024x1024');
@@ -102,4 +154,6 @@ writeFileSync(
 	previewPng('right', 30, 30, 'Bar on either side', 'Show the volume bar on the left or the right'),
 );
 console.log('  ✓ preview-rightbar.png 1600x1000');
+writeFileSync(path.join(outDir, 'preview-setup.png'), settingsPreviewPng());
+console.log('  ✓ preview-setup.png 1600x1000');
 console.log('Done.');

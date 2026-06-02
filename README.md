@@ -87,6 +87,8 @@ streamdeck pack com.danila.sonos-volume.sdPlugin
 
 ## Configuration
 
+![Quick setup — enter the speaker IP (left speaker for a stereo pair) and pick the volume step](marketing/preview-setup.png)
+
 1. Drag **Volume Up** and **Volume Down** onto two Stream Deck keys, with
    **Volume Down directly below Volume Up** (vertical pair).
 2. On each key, open the Property Inspector and enter your Sonos speaker's **IP
