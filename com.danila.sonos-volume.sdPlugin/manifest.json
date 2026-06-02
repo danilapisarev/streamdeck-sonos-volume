@@ -1,0 +1,64 @@
+{
+	"$schema": "https://schemas.elgato.com/streamdeck/plugins/manifest.json",
+	"URL": "https://github.com/danilapisarev/streamdeck-sonos-volume",
+	"UUID": "com.danila.sonos-volume",
+	"Name": "Sonos Volume",
+	"Version": "1.0.0.0",
+	"Author": "Danila Pisarev",
+	"Actions": [
+		{
+			"Name": "Volume Up",
+			"UUID": "com.danila.sonos-volume.up",
+			"Icon": "imgs/actions/volumeup",
+			"Tooltip": "Increase the volume of a Sonos speaker",
+			"PropertyInspectorPath": "ui/volume-settings.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/volumeup_key",
+					"TitleAlignment": "bottom"
+				}
+			]
+		},
+		{
+			"Name": "Volume Down",
+			"UUID": "com.danila.sonos-volume.down",
+			"Icon": "imgs/actions/volumedown",
+			"Tooltip": "Decrease the volume of a Sonos speaker",
+			"PropertyInspectorPath": "ui/volume-settings.html",
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/volumedown_key",
+					"TitleAlignment": "bottom"
+				}
+			]
+		}
+	],
+	"Category": "Sonos Volume",
+	"CategoryIcon": "imgs/actions/volumeup",
+	"CodePath": "bin/plugin.js",
+	"Description": "Increase or decrease the volume of your AirPlay-connected Sonos speakers with two Stream Deck buttons.",
+	"Icon": "imgs/plugin/icon",
+	"SDKVersion": 2,
+	"Software": {
+		"MinimumVersion": "6.4"
+	},
+	"OS": [
+		{
+			"Platform": "mac",
+			"MinimumVersion": "12"
+		},
+		{
+			"Platform": "windows",
+			"MinimumVersion": "10"
+		}
+	],
+	"Nodejs": {
+		"Version": "20"
+	}
+}

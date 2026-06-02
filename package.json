@@ -1,0 +1,42 @@
+{
+	"name": "streamdeck-sonos-volume",
+	"version": "1.0.0",
+	"description": "Stream Deck plugin with Volume Up / Volume Down buttons for AirPlay-connected Sonos speakers",
+	"author": "danila",
+	"license": "MIT",
+	"scripts": {
+		"build": "rollup -c",
+		"icons": "node scripts/gen-icons.mjs",
+		"marketing": "node scripts/gen-marketing.mjs",
+		"watch": "rollup -c -w --watch.onEnd=\"streamdeck restart com.danila.sonos-volume\"",
+		"dev": "streamdeck dev",
+		"link": "streamdeck link com.danila.sonos-volume.sdPlugin",
+		"unlink": "streamdeck unlink com.danila.sonos-volume.sdPlugin",
+		"restart": "streamdeck restart com.danila.sonos-volume",
+		"validate": "streamdeck validate com.danila.sonos-volume.sdPlugin",
+		"pack": "streamdeck pack com.danila.sonos-volume.sdPlugin --output dist"
+	},
+	"type": "module",
+	"devDependencies": {
+		"@elgato/cli": "^1.1.1",
+		"@resvg/resvg-js": "^2.6.2",
+		"@rollup/plugin-commonjs": "^28.0.0",
+		"@rollup/plugin-json": "^6.1.0",
+		"@rollup/plugin-node-resolve": "^15.2.2",
+		"@rollup/plugin-terser": "^0.4.4",
+		"@rollup/plugin-typescript": "^12.1.0",
+		"@tsconfig/node20": "^20.1.2",
+		"@types/node": "~20.15.0",
+		"rollup": "^4.0.2",
+		"tslib": "^2.6.2",
+		"typescript": "^5.7.3"
+	},
+	"dependencies": {
+		"@elgato/streamdeck": "^1.3.0",
+		"sonos": "^1.14.1"
+	},
+	"overrides": {
+		"serialize-javascript": "^7.0.5",
+		"ip": "2.0.1"
+	}
+}
