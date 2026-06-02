@@ -1,7 +1,7 @@
 {
 	"name": "streamdeck-sonos-volume",
 	"version": "1.0.0",
-	"description": "Stream Deck plugin with Volume Up / Volume Down buttons for AirPlay-connected Sonos speakers",
+	"description": "Volume for AirPlay Sonos — Stream Deck plugin with Volume Up / Volume Down buttons for AirPlay-connected Sonos speakers. Not affiliated with Sonos.",
 	"author": "danila",
 	"license": "MIT",
 	"scripts": {
@@ -14,7 +14,7 @@
 		"unlink": "streamdeck unlink com.danila.sonos-volume.sdPlugin",
 		"restart": "streamdeck restart com.danila.sonos-volume",
 		"validate": "streamdeck validate com.danila.sonos-volume.sdPlugin",
-		"pack": "streamdeck pack com.danila.sonos-volume.sdPlugin --output dist"
+		"pack": "streamdeck pack com.danila.sonos-volume.sdPlugin --output dist --force"
 	},
 	"type": "module",
 	"devDependencies": {

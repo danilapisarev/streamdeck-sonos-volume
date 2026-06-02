@@ -1,9 +1,14 @@
-# Sonos Volume
+# Volume for AirPlay Sonos
 
 A Stream Deck plugin with two buttons — **Volume Up** and **Volume Down** — for
 Sonos speakers, including speakers that are playing an AirPlay stream. The volume
 is controlled through the Sonos device API over your local network, so it works
 regardless of whether the audio source is AirPlay, a streaming service, or line-in.
+
+> **Disclaimer:** This is an independent, third-party plugin. It is **not
+> affiliated with, sponsored by, or endorsed by Sonos, Inc. or Apple Inc.**
+> "Sonos" and "AirPlay" are trademarks of their respective owners and are used
+> here only to describe compatibility.
 
 ## Actions
 

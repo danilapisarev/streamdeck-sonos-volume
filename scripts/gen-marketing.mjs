@@ -67,8 +67,8 @@ function previewPng(barSide, upVol, dnVol, title, subtitle) {
 			<stop offset="0" stop-color="#1b1d24"/><stop offset="1" stop-color="#0c0d11"/>
 		</linearGradient></defs>
 		<rect width="${W}" height="${H}" fill="url(#g)"/>
-		<text x="120" y="300" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="86" font-weight="700" fill="#ffffff">${title}</text>
-		<text x="122" y="372" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="40" font-weight="400" fill="#9aa0ad">${subtitle}</text>
+		<text x="120" y="296" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="64" font-weight="700" fill="#ffffff">${title}</text>
+		<text x="122" y="360" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="38" font-weight="400" fill="#9aa0ad">${subtitle}</text>
 	</svg>`;
 	const base = new Resvg(backdrop, { background: '#0c0d11', font: { loadSystemFonts: true } });
 	const baseImg = base.render();
@@ -94,7 +94,7 @@ writeFileSync(path.join(outDir, 'product-icon.png'), svgToPng(productIconSvg(), 
 console.log('  ✓ product-icon.png 1024x1024');
 writeFileSync(
 	path.join(outDir, 'preview-stacked.png'),
-	previewPng('left', 64, 64, 'Sonos Volume', 'Up / Down keys with a live volume bar'),
+	previewPng('left', 64, 64, 'Volume for AirPlay Sonos', 'Up / Down keys with a live volume bar'),
 );
 console.log('  ✓ preview-stacked.png 1600x1000');
 writeFileSync(

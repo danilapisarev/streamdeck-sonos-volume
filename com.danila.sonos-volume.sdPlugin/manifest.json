@@ -2,7 +2,7 @@
 	"$schema": "https://schemas.elgato.com/streamdeck/plugins/manifest.json",
 	"URL": "https://github.com/danilapisarev/streamdeck-sonos-volume",
 	"UUID": "com.danila.sonos-volume",
-	"Name": "Sonos Volume",
+	"Name": "Volume for AirPlay Sonos",
 	"Version": "1.0.0.0",
 	"Author": "Danila Pisarev",
 	"Actions": [
@@ -39,10 +39,10 @@
 			]
 		}
 	],
-	"Category": "Sonos Volume",
+	"Category": "Volume for AirPlay Sonos",
 	"CategoryIcon": "imgs/actions/volumeup",
 	"CodePath": "bin/plugin.js",
-	"Description": "Increase or decrease the volume of your AirPlay-connected Sonos speakers with two Stream Deck buttons.",
+	"Description": "Increase or decrease the volume of your AirPlay-connected Sonos speakers with two Stream Deck buttons. Not affiliated with, or endorsed by, Sonos.",
 	"Icon": "imgs/plugin/icon",
 	"SDKVersion": 2,
 	"Software": {
