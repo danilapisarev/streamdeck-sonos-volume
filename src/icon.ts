@@ -29,6 +29,8 @@ export type VolumeIconOptions = {
 	configured?: boolean;
 	/** Which edge the volume bar is drawn on. Defaults to `'left'`. */
 	barSide?: 'left' | 'right';
+	/** Whether to draw the volume percentage number. Defaults to `true`. */
+	showPercent?: boolean;
 };
 
 const UP_ACCENT = '#3ddc84'; // green
@@ -39,7 +41,14 @@ const MUTED_ACCENT = '#8a8a8e'; // grey
  * Builds the raw SVG markup for a volume key.
  */
 export function volumeIconSvg(opts: VolumeIconOptions): string {
-	const { direction, volume, muted = false, configured = true, barSide = 'left' } = opts;
+	const {
+		direction,
+		volume,
+		muted = false,
+		configured = true,
+		barSide = 'left',
+		showPercent = true,
+	} = opts;
 
 	const hasVolume = configured && typeof volume === 'number' && !Number.isNaN(volume);
 	const clamped = hasVolume ? Math.max(0, Math.min(100, Math.round(volume!))) : 0;
@@ -82,14 +91,16 @@ export function volumeIconSvg(opts: VolumeIconOptions): string {
 		direction > 0 ? chevron(20, 36) + chevron(34, 50) : chevron(50, 36) + chevron(36, 22);
 
 	// --- Center number (current volume, never the step) ---
+	// Optional: a key can hide the number, e.g. show it on only one of the pair.
 	const numberText = hasVolume ? String(clamped) : '—';
 	const numberFontSize = hasVolume ? 46 : 42;
-	const center = `
-		<text x="${cx}" y="98" text-anchor="middle"
+	const center = showPercent
+		? `<text x="${cx}" y="98" text-anchor="middle"
 			font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
 			font-size="${numberFontSize}" font-weight="700" fill="#ffffff">${numberText}${
-		hasVolume ? '<tspan font-size="20" font-weight="600" dx="2" dy="-2">%</tspan>' : ''
-	}</text>`;
+				hasVolume ? '<tspan font-size="20" font-weight="600" dx="2" dy="-2">%</tspan>' : ''
+			}</text>`
+		: '';
 
 	// --- Mute badge (small slashed speaker), placed opposite the bar ---
 	const badgeX = barSide === 'right' ? 24 : 96;

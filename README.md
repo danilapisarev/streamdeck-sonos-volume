@@ -94,8 +94,9 @@ streamdeck pack com.danila.sonos-volume.sdPlugin
 2. On each key, open the Property Inspector and enter your Sonos speaker's **IP
    address**.
    - Find it in the Sonos app: **Settings → System → About My System**.
-3. Optionally set the **Volume Step** (1%, 2%, 5%, or 10% — default 2%) and the
-   **Volume Bar** side (left or right).
+3. Optionally set the **Volume Step** (1%, 2%, 5%, or 10% — default 2%), the
+   **Volume Bar** side (left or right), and whether the key shows the **Volume %**
+   number (hide it on one key of a pair to avoid showing the number twice).
 
 > Tip: enter the same IP (and same bar side) on both buttons so they control the
 > same speaker and form one continuous gauge.

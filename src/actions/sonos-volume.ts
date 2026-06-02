@@ -22,6 +22,8 @@ export type SonosVolumeSettings = {
 	volumeStep?: number;
 	/** Which edge the volume bar is drawn on. Defaults to `'left'`. */
 	barSide?: 'left' | 'right';
+	/** Whether this key shows the volume percentage number. Defaults to `true`. */
+	showPercent?: boolean;
 };
 
 const DEFAULT_VOLUME_STEP = 2;
@@ -63,6 +65,7 @@ type Tile = {
 	direction: 1 | -1;
 	speakerIp?: string;
 	barSide: 'left' | 'right';
+	showPercent: boolean;
 };
 
 const tiles = new Map<string, Tile>();
@@ -78,6 +81,7 @@ function renderTile(tile: Tile, state: { volume?: number; muted?: boolean; confi
 				muted: state.muted,
 				configured: state.configured,
 				barSide: tile.barSide,
+				showPercent: tile.showPercent,
 			}),
 		)
 		.catch((error) => logger.error('setImage failed:', error));
@@ -153,6 +157,7 @@ abstract class SonosVolumeAction extends SingletonAction<SonosVolumeSettings> {
 			direction: this.direction,
 			speakerIp,
 			barSide: ev.payload.settings.barSide ?? 'left',
+			showPercent: ev.payload.settings.showPercent ?? true,
 		};
 		tiles.set(keyAction.id, tile);
 
@@ -185,6 +190,7 @@ abstract class SonosVolumeAction extends SingletonAction<SonosVolumeSettings> {
 
 		tile.speakerIp = ev.payload.settings.speakerIp;
 		tile.barSide = ev.payload.settings.barSide ?? 'left';
+		tile.showPercent = ev.payload.settings.showPercent ?? true;
 		if (tile.speakerIp) {
 			const last = lastState.get(tile.speakerIp);
 			renderTile(tile, last ? { ...last, configured: true } : { configured: true });
