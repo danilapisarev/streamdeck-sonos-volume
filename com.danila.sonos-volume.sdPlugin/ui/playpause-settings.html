@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
-    <title>Sonos Volume Settings</title>
+    <title>Sonos Play/Pause Settings</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../libs/css/sdpi.css">
     <style>
@@ -42,39 +42,7 @@
         </div>
         <div class="validation-message" id="ipValidationMessage">Please enter a valid IP address (e.g., 192.168.1.100)</div>
         <div class="sdpi-item">
-            <div class="spdi-item-value info-tooltip">Pick a speaker above, or enter its IP manually. To find it in the Sonos app go to Settings &gt; System &gt; About My System.</div>
-        </div>
-
-        <!-- Volume Step Configuration -->
-        <div class="sdpi-item">
-            <div class="sdpi-item-label">Volume Step</div>
-            <select class="sdpi-item-value" id="volumeStep">
-                <option value="1">1%</option>
-                <option value="2" selected>2%</option>
-                <option value="5">5%</option>
-                <option value="10">10%</option>
-            </select>
-        </div>
-
-        <!-- Volume Bar Position -->
-        <div class="sdpi-item">
-            <div class="sdpi-item-label">Volume Bar</div>
-            <select class="sdpi-item-value" id="barSide">
-                <option value="left" selected>Show on left</option>
-                <option value="right">Show on right</option>
-            </select>
-        </div>
-
-        <!-- Volume Percentage Visibility -->
-        <div class="sdpi-item">
-            <div class="sdpi-item-label">Volume %</div>
-            <select class="sdpi-item-value" id="showPercent">
-                <option value="yes" selected>Show on this key</option>
-                <option value="no">Hide on this key</option>
-            </select>
-        </div>
-        <div class="sdpi-item">
-            <div class="spdi-item-value info-tooltip">Tip: hide it on one key of the pair to avoid showing the number twice.</div>
+            <div class="spdi-item-value info-tooltip">Pick a speaker above, or enter its IP manually. The key shows ▶ when idle and ⏸ while playing.</div>
         </div>
     </div>
 
@@ -84,6 +52,7 @@
         let websocket = null;
         let pluginAction = null;
         let currentSettings = {};
+        let discoveredSpeakers = [];
 
         function validateIPAddress(ip) {
             const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
@@ -101,8 +70,6 @@
                 input.classList.remove('invalid');
             }
         }
-
-        let discoveredSpeakers = [];
 
         window.connectElgatoStreamDeckSocket = function(inPort, inPluginUUID, inRegisterEvent, inInfo) {
             pluginAction = inPluginUUID;
@@ -158,7 +125,6 @@
                 select.appendChild(option);
             }
 
-            // Reflect the currently configured IP if it matches a found speaker.
             select.value = discoveredSpeakers.some((s) => s.host === currentIp) ? currentIp : "";
         }
 
@@ -167,18 +133,6 @@
             if (settings.speakerIp !== undefined) {
                 ipInput.value = settings.speakerIp;
             }
-            const stepSelect = document.getElementById("volumeStep");
-            if (settings.volumeStep !== undefined) {
-                stepSelect.value = settings.volumeStep.toString();
-            }
-            const barSelect = document.getElementById("barSide");
-            if (settings.barSide !== undefined) {
-                barSelect.value = settings.barSide;
-            }
-            const percentSelect = document.getElementById("showPercent");
-            percentSelect.value = settings.showPercent === false ? "no" : "yes";
-
-            // Keep the discovery dropdown in sync with the saved IP.
             const speakerSelect = document.getElementById("speakerSelect");
             if (settings.speakerIp && discoveredSpeakers.some((s) => s.host === settings.speakerIp)) {
                 speakerSelect.value = settings.speakerIp;
@@ -189,9 +143,6 @@
             if (!websocket) return;
 
             const speakerIp = document.getElementById("speakerIp").value;
-            const volumeStep = parseInt(document.getElementById("volumeStep").value);
-            const barSide = document.getElementById("barSide").value;
-            const showPercent = document.getElementById("showPercent").value === "yes";
 
             if (speakerIp && !validateIPAddress(speakerIp)) {
                 showValidationMessage(true);
@@ -199,7 +150,7 @@
             }
             showValidationMessage(false);
 
-            const settings = { ...currentSettings, speakerIp, volumeStep, barSide, showPercent };
+            const settings = { ...currentSettings, speakerIp };
             currentSettings = settings;
 
             websocket.send(JSON.stringify({
@@ -217,13 +168,11 @@
         const speakerIpInput = document.getElementById("speakerIp");
         speakerIpInput.addEventListener("input", (e) => {
             validateInput(e);
-            // Typing a custom IP clears the dropdown selection unless it matches.
             const select = document.getElementById("speakerSelect");
             select.value = discoveredSpeakers.some((s) => s.host === e.target.value) ? e.target.value : "";
             saveSettings();
         });
 
-        // Picking a discovered speaker fills the IP field and saves.
         document.getElementById("speakerSelect").addEventListener("change", (e) => {
             if (!e.target.value) return;
             speakerIpInput.value = e.target.value;
@@ -232,10 +181,6 @@
         });
 
         document.getElementById("rescanButton").addEventListener("click", () => requestDevices(true));
-
-        document.getElementById("volumeStep").addEventListener("change", saveSettings);
-        document.getElementById("barSide").addEventListener("change", saveSettings);
-        document.getElementById("showPercent").addEventListener("change", saveSettings);
     </script>
 </body>
 </html>

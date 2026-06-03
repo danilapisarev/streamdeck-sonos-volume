@@ -4,10 +4,12 @@
 [![Downloads](https://img.shields.io/github/downloads/danilapisarev/streamdeck-sonos-volume/total)](https://github.com/danilapisarev/streamdeck-sonos-volume/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-A Stream Deck plugin with two buttons — **Volume Up** and **Volume Down** — for
-Sonos speakers, including speakers that are playing an AirPlay stream. The volume
-is controlled through the Sonos device API over your local network, so it works
-regardless of whether the audio source is AirPlay, a streaming service, or line-in.
+A Stream Deck plugin for Sonos speakers — including speakers playing an AirPlay
+stream — with **Volume Up**, **Volume Down**, and **Play / Pause** keys.
+Everything is controlled through the Sonos device API over your local network, so
+it works regardless of whether the audio source is AirPlay, a streaming service,
+or line-in. Speakers can be picked from an auto-discovery list, no IP hunting
+required.
 
 ![Volume for AirPlay Sonos — Up/Down keys with a live volume bar](marketing/preview-stacked.png)
 
@@ -28,10 +30,27 @@ All releases are on the [Releases page](https://github.com/danilapisarev/streamd
 
 - **Volume Up** — raises the speaker volume by the configured step on each press.
 - **Volume Down** — lowers the speaker volume by the configured step on each press.
+- **Play / Pause** — toggles playback and shows the speaker's state: a ▶ play
+  glyph when idle (press to play) and a green ⏸ pause glyph while playing (press
+  to pause).
 
-Both actions share the same settings (speaker IP + volume step). Raising the
+The volume keys share the same settings (speaker IP + volume step). Raising the
 volume on a muted speaker also unmutes it; a ⚠ is shown only when the speaker
 can't be reached.
+
+### Live play/pause state
+
+The Play / Pause key reads the speaker's transport state on the same poll loop as
+the volume keys, so the icon stays correct even when playback is started or
+paused elsewhere (the Sonos app, AirPlay, or another source). A press updates the
+icon immediately and the poll confirms the real state shortly after.
+
+### Finding your speaker
+
+Open any action's settings and the **Speaker** dropdown lists the Sonos speakers
+discovered on your network — pick one and the IP is filled in for you. Use
+**Rescan network** if a speaker was off when the panel opened, or type the IP
+manually.
 
 ### Live volume on the key
 
@@ -90,10 +109,12 @@ streamdeck pack com.danila.sonos-volume.sdPlugin
 ![Quick setup — enter the speaker IP (left speaker for a stereo pair) and pick the volume step](marketing/preview-setup.png)
 
 1. Drag **Volume Up** and **Volume Down** onto two Stream Deck keys, with
-   **Volume Down directly below Volume Up** (vertical pair).
-2. On each key, open the Property Inspector and enter your Sonos speaker's **IP
-   address**.
-   - Find it in the Sonos app: **Settings → System → About My System**.
+   **Volume Down directly below Volume Up** (vertical pair). Add a **Play /
+   Pause** key wherever you like.
+2. On each key, open the Property Inspector and pick your speaker from the
+   **Speaker** dropdown (it auto-discovers speakers on your network). You can also
+   enter the **IP address** manually — find it in the Sonos app under **Settings →
+   System → About My System**.
 3. Optionally set the **Volume Step** (1%, 2%, 5%, or 10% — default 2%), the
    **Volume Bar** side (left or right), and whether the key shows the **Volume %**
    number (hide it on one key of a pair to avoid showing the number twice).
@@ -106,27 +127,33 @@ streamdeck pack com.danila.sonos-volume.sdPlugin
 - Built with the [Elgato Stream Deck SDK](https://developer.elgato.com/documentation/stream-deck/)
   (`@elgato/streamdeck`).
 - Uses the [`sonos`](https://github.com/bencevans/node-sonos) library to read and
-  set volume over UPnP.
-- The Volume Up and Volume Down actions share a single cached Sonos connection per
-  speaker IP (see `src/actions/sonos-volume.ts`). Each press reads the current
-  volume first, so stepping always starts from the speaker's real level even if it
-  was changed elsewhere.
+  set volume, read transport state, and toggle playback over UPnP, plus SSDP for
+  network discovery.
+- All actions share a single cached Sonos connection per speaker IP and one poll
+  loop that reads volume, mute, and playback state for every speaker in use (see
+  `src/actions/sonos-volume.ts`). Each volume press reads the current volume
+  first, so stepping always starts from the speaker's real level even if it was
+  changed elsewhere.
+- Discovery runs on the plugin (Node) side on request from the Property Inspector
+  and is cached briefly, so opening settings lists speakers without re-scanning
+  the network every time.
 
 ## Project structure
 
 ```
 src/
-  plugin.ts                 # registers the two actions and connects to Stream Deck
-  actions/sonos-volume.ts   # base class + live tiles/polling + SonosVolumeUp/Down
-  icon.ts                   # runtime SVG renderer for the live volume key image
-  types/sonos.d.ts          # minimal type declarations for the `sonos` package
+  plugin.ts                    # registers the actions and connects to Stream Deck
+  actions/sonos-volume.ts      # live tiles/polling, SSDP discovery, Volume Up/Down + Play/Pause
+  icon.ts                      # runtime SVG renderers for the live volume and play/pause images
+  types/sonos.d.ts             # minimal type declarations for the `sonos` package
 scripts/
-  gen-icons.mjs             # regenerates the static PNG icons (npm run icons)
+  gen-icons.mjs                # regenerates the static PNG icons (npm run icons)
 com.danila.sonos-volume.sdPlugin/
-  manifest.json             # plugin + action definitions
-  ui/volume-settings.html   # Property Inspector (speaker IP + volume step)
-  imgs/                      # plugin and action icons
-  bin/plugin.js             # build output (generated)
+  manifest.json                # plugin + action definitions
+  ui/volume-settings.html      # Property Inspector for the volume keys
+  ui/playpause-settings.html   # Property Inspector for the play/pause key
+  imgs/                        # plugin and action icons
+  bin/plugin.js                # build output (generated)
 ```
 
 ## License

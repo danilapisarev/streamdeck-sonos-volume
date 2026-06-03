@@ -2,6 +2,17 @@
 
 All notable changes to **Volume for AirPlay Sonos** are documented here.
 
+## 1.0.2
+
+- **New: Play / Pause key** — a button that toggles playback on your speaker and
+  shows its state at a glance: a ▶ play glyph when idle and a green ⏸ pause glyph
+  while playing. It stays in sync even when playback is changed elsewhere (the
+  Sonos app, AirPlay, or another source).
+- **New: speaker auto-discovery** — the settings panel now scans your local
+  network and lists the Sonos speakers it finds, so you can pick one instead of
+  hunting for its IP. A **Rescan** button re-checks the network, and manual IP
+  entry still works as a fallback.
+
 ## 1.0.1
 
 - **New:** per-key option to hide the volume percentage — show the number on just

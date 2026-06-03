@@ -134,3 +134,57 @@ export function volumeIconDataUri(opts: VolumeIconOptions): string {
 	const base64 = Buffer.from(svg, 'utf8').toString('base64');
 	return `data:image/svg+xml;base64,${base64}`;
 }
+
+// --- Play / Pause key ------------------------------------------------------
+// The button shows the action a press will perform: a ▶ play glyph when the
+// speaker is not playing (press → play), or a ⏸ pause glyph when it is
+// (press → pause). A green tint marks the actively-playing state.
+
+const PLAYING_ACCENT = '#3ddc84'; // green — speaker is playing
+const IDLE_ACCENT = '#e5e5e7'; // near-white — idle / will play on press
+const UNCONFIGURED_ACCENT = '#8a8a8e'; // grey — no speaker set yet
+
+export type PlaybackIconOptions = {
+	/** Whether the speaker is currently playing. */
+	playing?: boolean;
+	/** Whether a speaker IP has been configured. */
+	configured?: boolean;
+};
+
+/**
+ * Builds the raw SVG markup for a play/pause key.
+ */
+export function playbackIconSvg(opts: PlaybackIconOptions): string {
+	const { playing = false, configured = true } = opts;
+	const accent = !configured ? UNCONFIGURED_ACCENT : playing ? PLAYING_ACCENT : IDLE_ACCENT;
+
+	// Glyphs are centred in the 144×144 key around (72, 72).
+	const playing_ = configured && playing;
+	const glyph = playing_
+		? // Pause: two rounded vertical bars.
+			`<rect x="52" y="46" width="14" height="52" rx="4" fill="${accent}"/>
+			 <rect x="78" y="46" width="14" height="52" rx="4" fill="${accent}"/>`
+		: // Play: right-pointing triangle with softly rounded corners.
+			`<path d="M 56 46 L 96 72 L 56 98 Z" fill="${accent}"
+				stroke="${accent}" stroke-width="6" stroke-linejoin="round"/>`;
+
+	return `<svg xmlns="http://www.w3.org/2000/svg" width="144" height="144" viewBox="0 0 144 144">
+		<defs>
+			<linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+				<stop offset="0" stop-color="#2c2c2e"/>
+				<stop offset="1" stop-color="#161617"/>
+			</linearGradient>
+		</defs>
+		<rect x="4" y="4" width="136" height="136" rx="26" fill="url(#bg)"/>
+		${glyph}
+	</svg>`.replace(/\n\s*/g, ' ');
+}
+
+/**
+ * Wraps the play/pause SVG markup in a base64 data URI for `action.setImage`.
+ */
+export function playbackIconDataUri(opts: PlaybackIconOptions): string {
+	const svg = playbackIconSvg(opts);
+	const base64 = Buffer.from(svg, 'utf8').toString('base64');
+	return `data:image/svg+xml;base64,${base64}`;
+}
