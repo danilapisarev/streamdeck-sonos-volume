@@ -1,7 +1,9 @@
 // Generates marketing assets for the Elgato Marketplace listing into ./marketing
-//   - product-icon.png      1024x1024 product/store icon
-//   - preview-stacked.png   the vertical Up/Down pair (left bar)
-//   - preview-rightbar.png  the pair with the bar on the right
+//   - product-icon.png       1024x1024 product/store icon
+//   - preview-stacked.png    the vertical Up/Down pair (left bar)
+//   - preview-rightbar.png   the pair with the bar on the right
+//   - preview-playpause.png  the Play/Pause key in both states
+//   - preview-setup.png      the settings panel (speaker auto-discovery)
 // Run with: npm run marketing
 
 import { Resvg } from '@resvg/resvg-js';
@@ -9,7 +11,7 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import url from 'node:url';
 
-import { volumeIconSvg } from '../src/icon.ts';
+import { playbackIconSvg, volumeIconSvg } from '../src/icon.ts';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 const outDir = path.resolve(__dirname, '../marketing');
@@ -89,6 +91,47 @@ function previewPng(barSide, upVol, dnVol, title, subtitle) {
 	return svgToPng(wrapper, W);
 }
 
+// ---- Play / Pause preview (key shown in both states) --------------------
+function playbackPreviewPng() {
+	const W = 1600;
+	const H = 1000;
+	const FONT = 'Helvetica Neue, Helvetica, Arial, sans-serif';
+
+	const backdrop = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+		<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+			<stop offset="0" stop-color="#1b1d24"/><stop offset="1" stop-color="#0c0d11"/>
+		</linearGradient></defs>
+		<rect width="${W}" height="${H}" fill="url(#g)"/>
+		<text x="120" y="296" font-family="${FONT}" font-size="64" font-weight="700" fill="#ffffff">Play / Pause</text>
+		<text x="122" y="360" font-family="${FONT}" font-size="38" font-weight="400" fill="#9aa0ad">One key that shows what your speaker is doing</text>
+	</svg>`;
+	const baseImg = new Resvg(backdrop, { background: '#0c0d11', font: { loadSystemFonts: true } }).render();
+
+	const keySize = 270;
+	const playingPng = svgToPng(playbackIconSvg({ playing: true, configured: true }), keySize);
+	const idlePng = svgToPng(playbackIconSvg({ playing: false, configured: true }), keySize);
+	const playingB64 = Buffer.from(playingPng).toString('base64');
+	const idleB64 = Buffer.from(idlePng).toString('base64');
+
+	// Two keys side by side (centred in the right half), each with a caption.
+	const gap = 80;
+	const k1x = 840;
+	const k2x = k1x + keySize + gap;
+	const ky = 430;
+	const capY = ky + keySize + 72;
+	const caption = (cx, text, color) =>
+		`<text x="${cx}" y="${capY}" text-anchor="middle" font-family="${FONT}" font-size="34" font-weight="600" fill="${color}">${text}</text>`;
+
+	const wrapper = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+		<image href="data:image/png;base64,${baseImg.asPng().toString('base64')}" x="0" y="0" width="${W}" height="${H}"/>
+		<image href="data:image/png;base64,${playingB64}" x="${k1x}" y="${ky}" width="${keySize}" height="${keySize}"/>
+		<image href="data:image/png;base64,${idleB64}" x="${k2x}" y="${ky}" width="${keySize}" height="${keySize}"/>
+		${caption(k1x + keySize / 2, 'Playing → tap to pause', '#3ddc84')}
+		${caption(k2x + keySize / 2, 'Idle → tap to play', '#aeb4c0')}
+	</svg>`;
+	return svgToPng(wrapper, W);
+}
+
 // ---- Setup / settings preview -------------------------------------------
 function settingsPreviewPng() {
 	const W = 1600;
@@ -96,9 +139,9 @@ function settingsPreviewPng() {
 	const FONT = 'Helvetica Neue, Helvetica, Arial, sans-serif';
 
 	const bullets = [
-		["Enter your Sonos speaker’s IP address", '#5b6472'],
-		["Stereo pair? Use the LEFT (primary) speaker", UP],
-		["Set the volume step — 1 / 2 / 5 / 10% per press", '#5b6472'],
+		["Pick your speaker — found automatically", UP],
+		["Volume Up / Down and Play / Pause keys", '#5b6472'],
+		["No Sonos app needed — works over your network", '#5b6472'],
 	];
 	const bulletSvg = bullets
 		.map(([t, dot], i) => {
@@ -123,6 +166,13 @@ function settingsPreviewPng() {
 			${select ? `<text x="${fx + fw - 34}" y="${y + 54}" font-family="${FONT}" font-size="26" fill="#8a8f9a">▾</text>` : ''}`;
 	};
 
+	// A small outline "button" (the Rescan network control).
+	const button = (y, label) => {
+		const bw = 230;
+		return `<rect x="${fx}" y="${y}" width="${bw}" height="52" rx="12" fill="#1c1e25" stroke="#3a3d47" stroke-width="1.5"/>
+			<text x="${fx + bw / 2}" y="${y + 35}" text-anchor="middle" font-family="${FONT}" font-size="26" fill="#c5c9d3">${label}</text>`;
+	};
+
 	const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
 		<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
 			<stop offset="0" stop-color="#1b1d24"/><stop offset="1" stop-color="#0c0d11"/>
@@ -133,10 +183,10 @@ function settingsPreviewPng() {
 
 		<rect x="${cardX}" y="${cardY}" width="${cardW}" height="${cardH}" rx="28" fill="#14151a" stroke="#2a2c33" stroke-width="1.5"/>
 		<text x="${fx}" y="${cardY + 64}" font-family="${FONT}" font-size="26" font-weight="600" fill="#8a8f9a">ACTION SETTINGS</text>
-		${field(cardY + 130, 'Speaker IP', '192.168.1.50', { accent: true })}
-		<text x="${fx}" y="${cardY + 268}" font-family="${FONT}" font-size="22" fill="${UP}">Stereo pair → usually the LEFT speaker’s IP</text>
-		${field(cardY + 310, 'Volume Step', '2%', { select: true })}
-		${field(cardY + 450, 'Volume Bar', 'Show on left', { select: true })}
+		${field(cardY + 130, 'Speaker', 'Living Room  (192.168.1.50)', { accent: true, select: true })}
+		<text x="${fx}" y="${cardY + 268}" font-family="${FONT}" font-size="22" fill="${UP}">Auto-discovered on your network</text>
+		${button(cardY + 296, 'Rescan network')}
+		${field(cardY + 410, 'Speaker IP', '192.168.1.50', {})}
 	</svg>`;
 	return svgToPng(svg, W);
 }
@@ -154,6 +204,8 @@ writeFileSync(
 	previewPng('right', 30, 30, 'Bar on either side', 'Show the volume bar on the left or the right'),
 );
 console.log('  ✓ preview-rightbar.png 1600x1000');
+writeFileSync(path.join(outDir, 'preview-playpause.png'), playbackPreviewPng());
+console.log('  ✓ preview-playpause.png 1600x1000');
 writeFileSync(path.join(outDir, 'preview-setup.png'), settingsPreviewPng());
 console.log('  ✓ preview-setup.png 1600x1000');
 console.log('Done.');

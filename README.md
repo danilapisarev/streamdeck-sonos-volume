@@ -40,6 +40,8 @@ can't be reached.
 
 ### Live play/pause state
 
+![Play / Pause key — pause glyph while playing, play glyph when idle](marketing/preview-playpause.png)
+
 The Play / Pause key reads the speaker's transport state on the same poll loop as
 the volume keys, so the icon stays correct even when playback is started or
 paused elsewhere (the Sonos app, AirPlay, or another source). A press updates the
