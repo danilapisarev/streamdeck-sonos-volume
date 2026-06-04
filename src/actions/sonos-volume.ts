@@ -42,6 +42,10 @@ export type SonosPlayPauseSettings = {
 const DEFAULT_VOLUME_STEP = 2;
 const POLL_INTERVAL_MS = 3000;
 
+// A second press on a Play/Pause key within this window is treated as a
+// double-press (skip to next track) instead of a play/pause toggle.
+const DOUBLE_PRESS_MS = 300;
+
 const logger = streamDeck.logger.createScope('SonosVolume');
 
 // --- Shared Sonos connections, cached per speaker IP -----------------------
@@ -413,6 +417,14 @@ export class SonosVolumeDown extends SonosVolumeAction {
 @action({ UUID: 'com.danila.sonos-volume.playpause' })
 export class SonosPlayPause extends SingletonAction<SonosPlayPauseSettings> {
 	/**
+	 * Pending single-press timers, keyed by key id. A press starts a timer that
+	 * fires the play/pause toggle once the double-press window has elapsed; a
+	 * second press within the window cancels it and skips to the next track
+	 * instead.
+	 */
+	private readonly pendingPresses = new Map<string, ReturnType<typeof setTimeout>>();
+
+	/**
 	 * Register the key as a live play/pause tile and draw its current state.
 	 */
 	override onWillAppear(ev: WillAppearEvent<SonosPlayPauseSettings>): void {
@@ -436,6 +448,11 @@ export class SonosPlayPause extends SingletonAction<SonosPlayPauseSettings> {
 
 	override onWillDisappear(ev: WillDisappearEvent<SonosPlayPauseSettings>): void {
 		playTiles.delete(ev.action.id);
+		const pending = this.pendingPresses.get(ev.action.id);
+		if (pending) {
+			clearTimeout(pending);
+			this.pendingPresses.delete(ev.action.id);
+		}
 		stopPolling();
 	}
 
@@ -464,7 +481,11 @@ export class SonosPlayPause extends SingletonAction<SonosPlayPauseSettings> {
 	}
 
 	/**
-	 * Toggle playback when the button is pressed.
+	 * Handle a button press. A single press toggles play/pause; a double press
+	 * skips to the next track. Because the two can only be told apart in time,
+	 * the toggle is deferred by {@link DOUBLE_PRESS_MS}: if a second press lands
+	 * within that window the pending toggle is cancelled and `next()` runs
+	 * instead.
 	 */
 	override async onKeyDown(ev: KeyDownEvent<SonosPlayPauseSettings>): Promise<void> {
 		const keyAction = ev.action as KeyAction<SonosPlayPauseSettings>;
@@ -476,6 +497,27 @@ export class SonosPlayPause extends SingletonAction<SonosPlayPauseSettings> {
 			return;
 		}
 
+		const pending = this.pendingPresses.get(keyAction.id);
+		if (pending) {
+			// Second press within the window — this is a double-press.
+			clearTimeout(pending);
+			this.pendingPresses.delete(keyAction.id);
+			await this.skipNext(keyAction, speakerIp);
+			return;
+		}
+
+		// First press — wait briefly to see whether a second one follows.
+		const timer = setTimeout(() => {
+			this.pendingPresses.delete(keyAction.id);
+			void this.togglePlayback(keyAction, speakerIp);
+		}, DOUBLE_PRESS_MS);
+		this.pendingPresses.set(keyAction.id, timer);
+	}
+
+	/**
+	 * Toggle playback on the speaker, optimistically updating every tile.
+	 */
+	private async togglePlayback(keyAction: KeyAction<SonosPlayPauseSettings>, speakerIp: string): Promise<void> {
 		try {
 			const sonos = getConnection(speakerIp);
 
@@ -496,6 +538,26 @@ export class SonosPlayPause extends SingletonAction<SonosPlayPauseSettings> {
 			renderPlayTilesForIp(speakerIp, { playback, configured: true });
 		} catch (error) {
 			logger.error('Failed to toggle playback:', {
+				error: error instanceof Error ? error.message : String(error),
+				stack: error instanceof Error ? error.stack : undefined,
+			});
+			dropConnection(speakerIp);
+			await keyAction.showAlert();
+		}
+	}
+
+	/**
+	 * Skip to the next track in the speaker's queue. A double-press leaves the
+	 * speaker playing, so refresh the tiles to pick up the new transport state.
+	 */
+	private async skipNext(keyAction: KeyAction<SonosPlayPauseSettings>, speakerIp: string): Promise<void> {
+		try {
+			const sonos = getConnection(speakerIp);
+			await sonos.next();
+			logger.debug('Skipped to next track');
+			await refreshIp(speakerIp);
+		} catch (error) {
+			logger.error('Failed to skip to next track:', {
 				error: error instanceof Error ? error.message : String(error),
 				stack: error instanceof Error ? error.stack : undefined,
 			});

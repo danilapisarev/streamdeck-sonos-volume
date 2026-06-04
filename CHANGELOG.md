@@ -2,6 +2,13 @@
 
 All notable changes to **Volume for AirPlay Sonos** are documented here.
 
+## 1.0.3
+
+- **New: double-press to skip** — double-pressing the Play / Pause key skips to
+  the next track in the queue. A single press still toggles playback (it now
+  takes effect a fraction of a second later, the moment the double-press window
+  passes).
+
 ## 1.0.2
 
 - **New: Play / Pause key** — a button that toggles playback on your speaker and

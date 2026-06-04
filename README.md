@@ -32,7 +32,7 @@ All releases are on the [Releases page](https://github.com/danilapisarev/streamd
 - **Volume Down** — lowers the speaker volume by the configured step on each press.
 - **Play / Pause** — toggles playback and shows the speaker's state: a ▶ play
   glyph when idle (press to play) and a green ⏸ pause glyph while playing (press
-  to pause).
+  to pause). **Double-press** to skip to the next track.
 
 The volume keys share the same settings (speaker IP + volume step). Raising the
 volume on a muted speaker also unmutes it; a ⚠ is shown only when the speaker
@@ -45,7 +45,8 @@ can't be reached.
 The Play / Pause key reads the speaker's transport state on the same poll loop as
 the volume keys, so the icon stays correct even when playback is started or
 paused elsewhere (the Sonos app, AirPlay, or another source). A press updates the
-icon immediately and the poll confirms the real state shortly after.
+icon immediately and the poll confirms the real state shortly after. A
+double-press skips to the next track instead of toggling playback.
 
 ### Finding your speaker
 

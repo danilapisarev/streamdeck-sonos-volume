@@ -16,6 +16,10 @@ declare module 'sonos' {
 		pause(): Promise<boolean>;
 		stop(): Promise<boolean>;
 		togglePlayback(): Promise<boolean>;
+		/** Skip to the next track in the queue. */
+		next(): Promise<boolean>;
+		/** Skip to the previous track in the queue. */
+		previous(): Promise<boolean>;
 	}
 
 	/** Promise-based SSDP discovery of Sonos devices on the local network. */
