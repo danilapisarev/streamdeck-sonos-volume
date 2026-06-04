@@ -40,7 +40,7 @@ can't be reached.
 
 ### Live play/pause state
 
-![Play / Pause key — pause glyph while playing, play glyph when idle](marketing/preview-playpause.png)
+![Play / Pause key — pause glyph while playing, play glyph when idle, double-tap to skip to the next track](marketing/preview-playpause.png)
 
 The Play / Pause key reads the speaker's transport state on the same poll loop as
 the volume keys, so the icon stays correct even when playback is started or

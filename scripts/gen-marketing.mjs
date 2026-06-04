@@ -91,7 +91,23 @@ function previewPng(barSide, upVol, dnVol, title, subtitle) {
 	return svgToPng(wrapper, W);
 }
 
-// ---- Play / Pause preview (key shown in both states) --------------------
+// A skip-to-next glyph (⏭) on the same key backdrop as the play/pause keys.
+// Drawn here rather than in src/icon.ts because the plugin reuses the
+// Play/Pause key for skip (double-press) — there is no dedicated "next" action.
+const SKIP_ACCENT = '#5ac8fa'; // blue — distinguishes the double-press action
+function skipNextIconSvg(accent = SKIP_ACCENT) {
+	return `<svg xmlns="http://www.w3.org/2000/svg" width="144" height="144" viewBox="0 0 144 144">
+		<defs><linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+			<stop offset="0" stop-color="#2c2c2e"/><stop offset="1" stop-color="#161617"/>
+		</linearGradient></defs>
+		<rect x="4" y="4" width="136" height="136" rx="26" fill="url(#bg)"/>
+		<path d="M 42 48 L 70 72 L 42 96 Z" fill="${accent}" stroke="${accent}" stroke-width="6" stroke-linejoin="round"/>
+		<path d="M 70 48 L 98 72 L 70 96 Z" fill="${accent}" stroke="${accent}" stroke-width="6" stroke-linejoin="round"/>
+		<rect x="100" y="46" width="13" height="52" rx="4" fill="${accent}"/>
+	</svg>`;
+}
+
+// ---- Play / Pause preview (key shown in all three states) ---------------
 function playbackPreviewPng() {
 	const W = 1600;
 	const H = 1000;
@@ -102,32 +118,35 @@ function playbackPreviewPng() {
 			<stop offset="0" stop-color="#1b1d24"/><stop offset="1" stop-color="#0c0d11"/>
 		</linearGradient></defs>
 		<rect width="${W}" height="${H}" fill="url(#g)"/>
-		<text x="120" y="296" font-family="${FONT}" font-size="64" font-weight="700" fill="#ffffff">Play / Pause</text>
-		<text x="122" y="360" font-family="${FONT}" font-size="38" font-weight="400" fill="#9aa0ad">One key that shows what your speaker is doing</text>
+		<text x="${W / 2}" y="236" text-anchor="middle" font-family="${FONT}" font-size="64" font-weight="700" fill="#ffffff">Play / Pause</text>
+		<text x="${W / 2}" y="300" text-anchor="middle" font-family="${FONT}" font-size="38" font-weight="400" fill="#9aa0ad">Tap to play or pause — double-tap to skip a track</text>
 	</svg>`;
 	const baseImg = new Resvg(backdrop, { background: '#0c0d11', font: { loadSystemFonts: true } }).render();
 
-	const keySize = 270;
-	const playingPng = svgToPng(playbackIconSvg({ playing: true, configured: true }), keySize);
-	const idlePng = svgToPng(playbackIconSvg({ playing: false, configured: true }), keySize);
-	const playingB64 = Buffer.from(playingPng).toString('base64');
-	const idleB64 = Buffer.from(idlePng).toString('base64');
+	const keySize = 240;
+	const playingB64 = Buffer.from(svgToPng(playbackIconSvg({ playing: true, configured: true }), keySize)).toString('base64');
+	const idleB64 = Buffer.from(svgToPng(playbackIconSvg({ playing: false, configured: true }), keySize)).toString('base64');
+	const nextB64 = Buffer.from(svgToPng(skipNextIconSvg(), keySize)).toString('base64');
 
-	// Two keys side by side (centred in the right half), each with a caption.
-	const gap = 80;
-	const k1x = 840;
+	// Three keys side by side, centred horizontally, each with a caption.
+	const gap = 90;
+	const total = keySize * 3 + gap * 2;
+	const k1x = Math.round((W - total) / 2);
 	const k2x = k1x + keySize + gap;
+	const k3x = k2x + keySize + gap;
 	const ky = 430;
-	const capY = ky + keySize + 72;
-	const caption = (cx, text, color) =>
-		`<text x="${cx}" y="${capY}" text-anchor="middle" font-family="${FONT}" font-size="34" font-weight="600" fill="${color}">${text}</text>`;
+	const capY = ky + keySize + 70;
+	const caption = (x, text, color) =>
+		`<text x="${x + keySize / 2}" y="${capY}" text-anchor="middle" font-family="${FONT}" font-size="32" font-weight="600" fill="${color}">${text}</text>`;
 
 	const wrapper = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
 		<image href="data:image/png;base64,${baseImg.asPng().toString('base64')}" x="0" y="0" width="${W}" height="${H}"/>
 		<image href="data:image/png;base64,${playingB64}" x="${k1x}" y="${ky}" width="${keySize}" height="${keySize}"/>
 		<image href="data:image/png;base64,${idleB64}" x="${k2x}" y="${ky}" width="${keySize}" height="${keySize}"/>
-		${caption(k1x + keySize / 2, 'Playing → tap to pause', '#3ddc84')}
-		${caption(k2x + keySize / 2, 'Idle → tap to play', '#aeb4c0')}
+		<image href="data:image/png;base64,${nextB64}" x="${k3x}" y="${ky}" width="${keySize}" height="${keySize}"/>
+		${caption(k1x, 'Playing → tap to pause', '#3ddc84')}
+		${caption(k2x, 'Idle → tap to play', '#aeb4c0')}
+		${caption(k3x, 'Double-tap → next track', SKIP_ACCENT)}
 	</svg>`;
 	return svgToPng(wrapper, W);
 }
