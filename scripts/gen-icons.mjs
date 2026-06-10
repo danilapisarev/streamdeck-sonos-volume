@@ -68,7 +68,7 @@ function playKeySvg() {
 			<stop offset="0" stop-color="#2c2c2e"/><stop offset="1" stop-color="#161617"/>
 		</linearGradient></defs>
 		<rect x="4" y="4" width="136" height="136" rx="26" fill="url(#bg)"/>
-		<path d="M 56 46 L 96 72 L 56 98 Z" fill="#e5e5e7" stroke="#e5e5e7" stroke-width="6" stroke-linejoin="round"/>
+		<path d="M 59 46 L 99 72 L 59 98 Z" fill="#e5e5e7" stroke="#e5e5e7" stroke-width="6" stroke-linejoin="round"/>
 	</svg>`;
 }
 

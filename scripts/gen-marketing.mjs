@@ -70,7 +70,7 @@ function previewPng(barSide, upVol, dnVol, title, subtitle) {
 		</linearGradient></defs>
 		<rect width="${W}" height="${H}" fill="url(#g)"/>
 		<text x="120" y="296" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="64" font-weight="700" fill="#ffffff">${title}</text>
-		<text x="122" y="360" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="38" font-weight="400" fill="#9aa0ad">${subtitle}</text>
+		<text x="120" y="360" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="38" font-weight="400" fill="#9aa0ad">${subtitle}</text>
 	</svg>`;
 	const base = new Resvg(backdrop, { background: '#0c0d11', font: { loadSystemFonts: true } });
 	const baseImg = base.render();
@@ -101,9 +101,9 @@ function skipNextIconSvg(accent = SKIP_ACCENT) {
 			<stop offset="0" stop-color="#2c2c2e"/><stop offset="1" stop-color="#161617"/>
 		</linearGradient></defs>
 		<rect x="4" y="4" width="136" height="136" rx="26" fill="url(#bg)"/>
-		<path d="M 42 48 L 70 72 L 42 96 Z" fill="${accent}" stroke="${accent}" stroke-width="6" stroke-linejoin="round"/>
-		<path d="M 70 48 L 98 72 L 70 96 Z" fill="${accent}" stroke="${accent}" stroke-width="6" stroke-linejoin="round"/>
-		<rect x="100" y="46" width="13" height="52" rx="4" fill="${accent}"/>
+		<path d="M 37 48 L 65 72 L 37 96 Z" fill="${accent}" stroke="${accent}" stroke-width="6" stroke-linejoin="round"/>
+		<path d="M 65 48 L 93 72 L 65 96 Z" fill="${accent}" stroke="${accent}" stroke-width="6" stroke-linejoin="round"/>
+		<rect x="95" y="46" width="13" height="52" rx="4" fill="${accent}"/>
 	</svg>`;
 }
 

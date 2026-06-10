@@ -79,8 +79,11 @@ export function volumeIconSvg(opts: VolumeIconOptions): string {
 				: ''
 		}`;
 
-	// Content (chevrons + number) is centred in the area beside the bar.
-	const cx = barSide === 'right' ? 68 : 80;
+	// Content (chevrons + number) is centred in the free area beside the bar.
+	// The bar hugs one edge (12px margin), so the remaining space is centred
+	// symmetrically either way — keeping the left- and right-bar layouts mirror
+	// images of each other rather than offset by different amounts.
+	const cx = barSide === 'right' ? 63 : 81;
 
 	// --- Direction chevrons (two stacked) ---
 	const chevronWidth = 20;
@@ -94,11 +97,17 @@ export function volumeIconSvg(opts: VolumeIconOptions): string {
 	// Optional: a key can hide the number, e.g. show it on only one of the pair.
 	const numberText = hasVolume ? String(clamped) : '—';
 	const numberFontSize = hasVolume ? 46 : 42;
+	// `text-anchor="middle"` centres the whole string, so the trailing "%" would
+	// pull the digits off-centre (left of the chevron). Nudge the anchor right by
+	// half the "%" advance so the digits themselves sit centred under the chevron.
+	const pctDx = 2;
+	const pctAdvance = 12; // approx width of the small "%" at font-size 20
+	const numberX = hasVolume ? cx + Math.round((pctDx + pctAdvance) / 2) : cx;
 	const center = showPercent
-		? `<text x="${cx}" y="98" text-anchor="middle"
+		? `<text x="${numberX}" y="98" text-anchor="middle"
 			font-family="Helvetica Neue, Helvetica, Arial, sans-serif"
 			font-size="${numberFontSize}" font-weight="700" fill="#ffffff">${numberText}${
-				hasVolume ? '<tspan font-size="20" font-weight="600" dx="2" dy="-2">%</tspan>' : ''
+				hasVolume ? `<tspan font-size="20" font-weight="600" dx="${pctDx}" dy="-2">%</tspan>` : ''
 			}</text>`
 		: '';
 
@@ -164,8 +173,9 @@ export function playbackIconSvg(opts: PlaybackIconOptions): string {
 		? // Pause: two rounded vertical bars.
 			`<rect x="52" y="46" width="14" height="52" rx="4" fill="${accent}"/>
 			 <rect x="78" y="46" width="14" height="52" rx="4" fill="${accent}"/>`
-		: // Play: right-pointing triangle with softly rounded corners.
-			`<path d="M 56 46 L 96 72 L 56 98 Z" fill="${accent}"
+		: // Play: right-pointing triangle, nudged right of geometric centre so its
+			// visual mass is optically centred to match the pause bars (centre x=72).
+			`<path d="M 59 46 L 99 72 L 59 98 Z" fill="${accent}"
 				stroke="${accent}" stroke-width="6" stroke-linejoin="round"/>`;
 
 	return `<svg xmlns="http://www.w3.org/2000/svg" width="144" height="144" viewBox="0 0 144 144">

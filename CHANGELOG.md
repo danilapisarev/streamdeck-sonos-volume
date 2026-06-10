@@ -2,6 +2,20 @@
 
 All notable changes to **Volume for AirPlay Sonos** are documented here.
 
+## 1.0.4
+
+- **Improved: key rendering** — the volume percentage is now centred under the
+  direction chevron (the trailing "%" was pulling the digits off-centre), the
+  left- and right-bar layouts are exact mirror images of each other, and the
+  play glyph on the Play / Pause key is optically centred. The key's default
+  image now matches the live icon, so the glyph no longer shifts when the
+  plugin starts.
+- **Improved: settings panel** — the Property Inspector now renders in the
+  system font for better readability, and hint text below the fields is styled
+  correctly (fixed a CSS class typo).
+- **Marketplace** — expanded the listing description and refreshed the preview
+  images.
+
 ## 1.0.3
 
 - **New: double-press to skip** — double-pressing the Play / Pause key skips to

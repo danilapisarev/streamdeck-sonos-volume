@@ -5,6 +5,12 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../libs/css/sdpi.css">
     <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-size: 12px;
+        }
+        input, select, button, textarea,
+        .sdpi-item-label, .sdpi-item-value { font-family: inherit; }
         .sdpi-item-label { color: white; }
         .sdpi-item-value { color: white !important; }
         select.sdpi-item-value option { background-color: #2D2D2D; color: white; }
@@ -42,7 +48,7 @@
         </div>
         <div class="validation-message" id="ipValidationMessage">Please enter a valid IP address (e.g., 192.168.1.100)</div>
         <div class="sdpi-item">
-            <div class="spdi-item-value info-tooltip">Pick a speaker above, or enter its IP manually. To find it in the Sonos app go to Settings &gt; System &gt; About My System.</div>
+            <div class="sdpi-item-value info-tooltip">Pick a speaker above, or enter its IP manually. To find it in the Sonos app go to Settings &gt; System &gt; About My System.</div>
         </div>
 
         <!-- Volume Step Configuration -->
@@ -74,7 +80,7 @@
             </select>
         </div>
         <div class="sdpi-item">
-            <div class="spdi-item-value info-tooltip">Tip: hide it on one key of the pair to avoid showing the number twice.</div>
+            <div class="sdpi-item-value info-tooltip">Tip: hide it on one key of the pair to avoid showing the number twice.</div>
         </div>
     </div>
 
